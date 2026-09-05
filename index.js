@@ -755,6 +755,7 @@ async function handleRegisterButton(interaction, tournamentId, client) {
       content:
         `✅ You are already registered!\n\n` +
         `Poker.now username: **${existing.pokerName}**\n` +
+        (existing.assignedCode ? `🔐 Code: **${existing.assignedCode}**\n` : "") +
         `<a:arrowNeon:1456927008167825543>  **Join the table here:**\n${tournament.pokerLink}`,
       ephemeral: true,
     });
