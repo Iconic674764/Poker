@@ -161,7 +161,9 @@ function buildTournamentEmbed(tournament) {
       { name: "<:GradientProfile:1430783792024522763>   Host", value: `<@${tournament.hostId}>`, inline: false }
     )
     .setImage("attachment://banner.png")
-    .setFooter({ text: "Poker.now Tournament  •  Good luck at the tables!" })
+    .setFooter({
+  text: `Tournament ID: ${tournament.id}  •  Good luck at the tables!`,
+})
     .setTimestamp();
 }
 
