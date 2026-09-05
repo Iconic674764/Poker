@@ -1,3 +1,13 @@
+// --- DUMMY HTTP SERVER FOR RENDER PORT BINDING ---
+const http = require("http");
+const PORT = process.env.PORT || 3000;
+http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "text/plain" });
+  res.end("Bot is running!");
+}).listen(PORT, () => {
+  console.log(`Dummy HTTP server is listening on port ${PORT}`);
+});
+
 const {
   Client,
   GatewayIntentBits,
