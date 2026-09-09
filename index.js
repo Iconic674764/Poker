@@ -930,6 +930,13 @@ client.on("messageCreate", async (message) => {
 
   if (commandParts[0]?.toLowerCase() === "!addcode") {
     await message.delete().catch(() => {});
+    if (!message.member.permissions.has("Administrator")) {
+  const sent = await channel.send(
+    "❌ Only server Administrators can use `!addcode`."
+  );
+  setTimeout(() => sent.delete().catch(() => {}), 10_000);
+  return;
+    }
     const tournamentId = commandParts[1];
     if (!tournamentId || commandParts.length !== 2) {
       const sent = await channel.send("❌ Usage: `!addcode <tournament-id>`");
@@ -947,11 +954,6 @@ client.on("messageCreate", async (message) => {
       const sent = await channel.send(
         "❌ Active tournament not found. Check the tournament ID and try again."
       );
-      setTimeout(() => sent.delete().catch(() => {}), 60_000);
-      return;
-    }
-    if (tournament.hostId !== message.author.id) {
-      const sent = await channel.send("❌ Only the tournament host can add codes.");
       setTimeout(() => sent.delete().catch(() => {}), 60_000);
       return;
     }
