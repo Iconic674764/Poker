@@ -1018,7 +1018,16 @@ client.on("messageCreate", async (message) => {
   }
 
   if (command !== "!poker") return;
-  await message.delete().catch(() => {});
+
+await message.delete().catch(() => {});
+
+if (!message.member.permissions.has("Administrator")) {
+  const sent = await channel.send(
+    "❌ Only server Administrators can use `!poker`."
+  );
+  setTimeout(() => sent.delete().catch(() => {}), 10_000);
+  return;
+}
 
   const embed = new EmbedBuilder()
     .setColor(0x5865f2)
