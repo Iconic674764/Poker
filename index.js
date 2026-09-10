@@ -60,6 +60,7 @@ const ID = {
   PANEL_PREV: "poker_panel_prev:",
   PANEL_NEXT: "poker_panel_next:",
   PANEL_REFRESH: "poker_panel_refresh:",
+  HELP_MENU: "poker_help_menu",
 };
 
 function emptyData() {
@@ -925,6 +926,109 @@ client.on("messageCreate", async (message) => {
   const command = message.content.trim().toLowerCase();
   const commandParts = message.content.trim().split(/\s+/);
   const channel = message.channel;
+    if (command === "!help") {
+    await message.delete().catch(() => {});
+
+    const helpEmbed = new EmbedBuilder()
+      .setColor(0x5865f2)
+      .setTitle("🃏 Poker Tournament Bot — Help Center")
+      .setDescription(
+        "Welcome to the Poker Tournament Bot!\n\n" +
+        "Use the dropdown menu below to view detailed information about each command and feature."
+      )
+      .addFields(
+        {
+          name: "🎯 Create Tournament",
+          value: "`!poker`\nCreate and configure a new Poker.now tournament.",
+          inline: false,
+        },
+        {
+          name: "📋 Available Commands",
+          value:
+            "`!poker` • Create tournament\n" +
+            "`!panel` • View participant data\n" +
+            "`!addcode <Tournament ID>` • Add more codes\n" +
+            "`!help` • Open this Help Center",
+          inline: false,
+        }
+      )
+      .setFooter({
+        text: "Cwallet Poker Bot • Help Center",
+      });
+
+    const helpMenu = new StringSelectMenuBuilder()
+      .setCustomId(ID.HELP_MENU)
+      .setPlaceholder("📖 Select a topic to learn more")
+      .addOptions(
+        new StringSelectMenuOptionBuilder()
+          .setLabel("Create Tournament")
+          .setDescription("Learn how to use !poker")
+          .setEmoji("🎯")
+          .setValue("poker"),
+
+        new StringSelectMenuOptionBuilder()
+          .setLabel("Registration Duration")
+          .setDescription("Learn about tournament duration")
+          .setEmoji("⏱️")
+          .setValue("duration"),
+
+        new StringSelectMenuOptionBuilder()
+          .setLabel("Tournament Codes")
+          .setDescription("How tournament codes work")
+          .setEmoji("🔐")
+          .setValue("codes"),
+
+        new StringSelectMenuOptionBuilder()
+          .setLabel("Add More Codes")
+          .setDescription("Use !addcode to add codes later")
+          .setEmoji("➕")
+          .setValue("addcode"),
+
+        new StringSelectMenuOptionBuilder()
+          .setLabel("Participant Panel")
+          .setDescription("View registered players")
+          .setEmoji("📊")
+          .setValue("panel"),
+
+        new StringSelectMenuOptionBuilder()
+          .setLabel("Tournament ID")
+          .setDescription("Learn about Tournament IDs")
+          .setEmoji("🆔")
+          .setValue("tournamentid"),
+
+        new StringSelectMenuOptionBuilder()
+          .setLabel("Required Role")
+          .setDescription("Role restriction information")
+          .setEmoji("👤")
+          .setValue("role"),
+
+        new StringSelectMenuOptionBuilder()
+          .setLabel("Maximum Entries")
+          .setDescription("Set registration capacity")
+          .setEmoji("👥")
+          .setValue("entries"),
+
+        new StringSelectMenuOptionBuilder()
+          .setLabel("All Commands")
+          .setDescription("View all available commands")
+          .setEmoji("📚")
+          .setValue("commands")
+      );
+
+    const row = new ActionRowBuilder().addComponents(helpMenu);
+
+    const sent = await channel.send({
+      embeds: [helpEmbed],
+      components: [row],
+    });
+
+    // Delete ONLY the help message after 10 minutes
+    setTimeout(() => {
+      sent.delete().catch(() => {});
+    }, 600000);
+
+    return;
+    }
 
   if (commandParts[0]?.toLowerCase() === "!addcode") {
     await message.delete().catch(() => {});
@@ -1112,6 +1216,117 @@ client.on("interactionCreate", async (interaction) => {
         );
       }
     } else if (interaction.isStringSelectMenu()) {
+    if (interaction.customId === ID.HELP_MENU) {
+  const selected = interaction.values[0];
+
+  let detailEmbed;
+
+  if (selected === "poker") {
+    detailEmbed = new EmbedBuilder()
+      .setTitle("🃏 Create Tournament")
+      .setDescription("Use `!poker` to create a new Poker tournament.")
+      .addFields(
+        { name: "Tournament Name", value: "Set your tournament name." },
+        { name: "Poker.now Link", value: "Add the Poker.now game link." },
+        { name: "Rules", value: "Add your tournament rules." },
+        { name: "Prize Structure", value: "Enter the prize information." },
+        { name: "Registration Duration", value: "Set how long registration stays open." },
+        { name: "Required Role", value: "Choose who can register." },
+        { name: "Maximum Entries", value: "Set the maximum number of participants." },
+        { name: "Tournament Codes", value: "Add codes for registered players." }
+      );
+  }
+
+  else if (selected === "duration") {
+    detailEmbed = new EmbedBuilder()
+      .setTitle("⏱️ Registration Duration")
+      .setDescription(
+        "Set how long players can register.\n\n" +
+        "**Examples:**\n" +
+        "`30m` = 30 minutes\n" +
+        "`5h` = 5 hours\n" +
+        "`2h 10m` = 2 hours 10 minutes\n" +
+        "`1d` = 1 day\n\n" +
+        "Minimum duration is **1 minute**."
+      );
+  }
+
+  else if (selected === "codes") {
+    detailEmbed = new EmbedBuilder()
+      .setTitle("🎟️ Tournament Codes")
+      .setDescription(
+        "You can add Poker.now tournament codes in Module 1 and Module 2.\n\n" +
+        "Add **one code per line**. Codes are assigned to participants in order."
+      );
+  }
+
+  else if (selected === "addcode") {
+    detailEmbed = new EmbedBuilder()
+      .setTitle("➕ Add More Codes")
+      .setDescription(
+        "Use:\n`!addcode <Tournament ID>`\n\n" +
+        "This allows you to add more tournament codes to an active tournament.\n\n" +
+        "⚠️ Only **Server Administrators** can use this command."
+      );
+  }
+
+  else if (selected === "panel") {
+    detailEmbed = new EmbedBuilder()
+      .setTitle("📊 Participant Panel")
+      .setDescription(
+        "Use `!panel <Tournament ID>` to view tournament participant data.\n\n" +
+        "The panel can show registered participants and their submitted information."
+      );
+  }
+
+  else if (selected === "tournamentid") {
+    detailEmbed = new EmbedBuilder()
+      .setTitle("🆔 Tournament ID")
+      .setDescription(
+        "Every tournament gets a unique **Tournament ID**.\n\n" +
+        "The Tournament ID is displayed in the tournament announcement footer.\n\n" +
+        "You need this ID for commands such as `!addcode` and `!panel`."
+      );
+  }
+
+  else if (selected === "role") {
+    detailEmbed = new EmbedBuilder()
+      .setTitle("🎭 Required Role")
+      .setDescription(
+        "You can select a Discord role that members must have to register.\n\n" +
+        "If no role is selected, registration is open to everyone."
+      );
+  }
+
+  else if (selected === "entries") {
+    detailEmbed = new EmbedBuilder()
+      .setTitle("👥 Maximum Entries")
+      .setDescription(
+        "Set the maximum number of participants allowed in the tournament.\n\n" +
+        "Once the maximum number of entries is reached, new registrations will not be accepted."
+      );
+  }
+
+  else if (selected === "commands") {
+    detailEmbed = new EmbedBuilder()
+      .setTitle("📋 All Commands")
+      .setDescription(
+        "**`!poker`**\nCreate a new Poker tournament.\n\n" +
+        "**`!panel <Tournament ID>`**\nView participant/tournament data.\n\n" +
+        "**`!addcode <Tournament ID>`**\nAdd more tournament codes.\n\n" +
+        "**`!help`**\nOpen this Help Center."
+      );
+  }
+
+  if (detailEmbed) {
+    await interaction.reply({
+      embeds: [detailEmbed],
+      ephemeral: true
+    });
+  }
+
+  return;
+    }
       if (interaction.customId.startsWith(ID.ROLE_SELECT)) {
         await handleRoleSelect(
           interaction,
