@@ -654,7 +654,6 @@ async function handleAddCodesModal(interaction, sessionId, moduleIndex) {
       `✅ Added **${newCodes.length}** codes from Module ${moduleIndex + 1}.\n` +
       `Total available codes: **${tournament.codes.length}**.\n\n` +
       "These codes were appended after the existing codes and will be assigned in order.",
-    components: buildAddCodesComponents(sessionId),
   });
 }
 
@@ -988,7 +987,6 @@ client.on("messageCreate", async (message) => {
       .setFooter({ text: "Only the tournament host can use these buttons." });
     const sent = await channel.send({
       embeds: [embed],
-      components: buildAddCodesComponents(sessionId),
     });
     setTimeout(() => {
       pendingCodeAdditions.delete(sessionId);
