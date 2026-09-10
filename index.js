@@ -550,7 +550,6 @@ async function handleCodesModal(interaction, pendingId, moduleIndex) {
       `✅ Saved **${codes.length}** codes in Module ${moduleIndex + 1}.\n` +
       `Total ready: **${pending.codes.length}** codes.\n\n` +
       "Codes will be assigned in order: Module 1, then Module 2.",
-    components: buildFinalSetupComponents(pendingId),
   });
 }
 
@@ -987,6 +986,7 @@ client.on("messageCreate", async (message) => {
       .setFooter({ text: "Only the tournament host can use these buttons." });
     const sent = await channel.send({
       embeds: [embed],
+      components: buildAddCodesComponents(sessionId),
     });
     setTimeout(() => {
       pendingCodeAdditions.delete(sessionId);
