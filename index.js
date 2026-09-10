@@ -931,7 +931,7 @@ client.on("messageCreate", async (message) => {
 
     const helpEmbed = new EmbedBuilder()
       .setColor(0x5865f2)
-      .setTitle("🃏 Poker Tournament Bot — Help Center")
+      .setTitle("🃏Play Poker Tournament Bot — Help Center")
       .setDescription(
         "Welcome to the Poker Tournament Bot!\n\n" +
         "Use the dropdown menu below to view detailed information about each command and feature."
@@ -953,7 +953,7 @@ client.on("messageCreate", async (message) => {
         }
       )
       .setFooter({
-        text: "Cwallet Poker Bot • Help Center",
+        text: "Play Poker Bot • Help Center",
       });
 
     const helpMenu = new StringSelectMenuBuilder()
